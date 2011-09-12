@@ -12,11 +12,18 @@
 		wallpaper: undefined,
 		content: undefined,
 		hidden: false,
+		style: undefined,
+		use_slide: false,
 		_init: function() {
 			var self = this;
 			var hid = this.element.attr('data-sheethidden');
 			if (typeof(hid) != 'undefined' && hid.toLowerCase() == 'true') {
 				this.hidden = true;
+			}
+			this.style = this.element.attr('data-sheetstyle');
+			hid = this.element.attr('data-sheetuseslide');
+			if (typeof(hid) != 'undefined' && hid.toLowerCase() == 'true') {
+				this.use_slide = true;
 			}
 			this.content = ((typeof this.element.jqmData('sheet') !== 'undefined')
 				? $('#' + this.element.jqmData('sheet'))
@@ -74,16 +81,20 @@
 				this._positionContent();
 			}, this));
 			
-			this.content.animationComplete(function(event) {
+			if( $.support.cssTransitions && !this.use_slide) {
+				this.content.animationComplete(function(event) {
 					$(event.target).removeClass("ui-actionsheet-animateIn");
 				});
-			this.content.addClass("ui-actionsheet-animateIn").show();
+				this.content.addClass("ui-actionsheet-animateIn").show();
+			} else {
+				this.content.show("slide", { direction: "down" }, 400);
+			}
 		},
 		close: function() {
 			var self = this;
 			this.wallpaper.unbind('tap');
 			$(window).unbind('orientationchange.actionsheet');
-			if( $.support.cssTransitions ) {
+			if( $.support.cssTransitions && !this.use_slide) {
 				this.content.addClass("ui-actionsheet-animateOut");
 				this.wallpaper.remove();
 				this.content.animationComplete(function() {
@@ -91,7 +102,11 @@
 				});
 			} else {
 				this.wallpaper.remove();
-				this.content.fadeOut();
+				if (this.use_slide) {
+					this.content.hide("slide", { direction: "down" }, 400);
+				} else {
+					this.content.fadeOut();
+				}
 				this.element.bind('tap', function(){
 					self.open();
 				});
@@ -112,10 +127,18 @@
 			var height = $(window).height(),
 				width = $(window).width(),
 				scrollPosition = $(window).scrollTop();
-			this.content.css({
-				'top': (scrollPosition + height / 2 - this.content.height() / 2),
-				'left': (width / 2 - this.content.width() / 2)
-			});
+			if (typeof(this.style) != 'undefined' && this.style.toLowerCase() == 'android') {
+				this.content.css({
+					'top': (height - this.content.height()),
+					'left': 0,
+					'width': width
+				});
+			} else {
+				this.content.css({
+					'top': (scrollPosition + height / 2 - this.content.height() / 2),
+					'left': (width / 2 - this.content.width() / 2)
+				});
+			}
 		}
 	});
 
