@@ -38,3 +38,26 @@ Features
 * Popup content can be any HTML
 * No js coding needed.
 * Nice default look
+
+ANDROID MODE
+------------
+There are some new features to make jquery.mobile.actionsheet look more like an android action sheet, see the motivation in https://github.com/hiroprotagonist/jquery.mobile.actionsheet/issues/9
+
+New attributes:
+data-sheethidden="true"   --> that will hide the anchor link, for cases you don't need any ui to open the sheet cause you'll do it programatically through $('#idsheet').actionsheet('open')
+
+data-sheetstyle="android" --> that will make an android-like action sheet, that means the sheet will be positioned at footer of page, with background taking all the width of the screen.
+
+data-sheetuseslide="true" --> that will use the jquery-ui slide effect to animate the sheet, which better mimics an android action sheet, instead of using the default css transition.
+
+PROGRAMATICALLY OPEN/CLOSE THE SHEET
+------------------------------------
+Also, a new method 'is_opened' has been added to check if the sheet is opened or closed, so, as an example, the code for a phone/tablet button handler to open/close the sheet could be:
+
+function onButtonPressed() {
+      if ($('#mysheet').actionsheet('is_opened')) {
+		$('#mysheet').actionsheet('close');
+	} else {
+		$('#mysheet').actionsheet('open');
+	}
+}
