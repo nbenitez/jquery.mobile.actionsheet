@@ -123,6 +123,9 @@
 				self.open();
 			});
 		},
+		is_opened: function() {
+			return $('.ui-actionsheet-wallpaper').length > 0;
+		},
 		_positionContent: function() {
 			var height = $(window).height(),
 				width = $(window).width(),
