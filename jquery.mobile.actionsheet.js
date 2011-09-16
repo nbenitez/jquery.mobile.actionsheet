@@ -90,22 +90,26 @@
 				this.content.show("slide", { direction: "down" }, 400);
 			}
 		},
-		close: function() {
+		close: function(cb) {
 			var self = this;
+			if (cb == null) {
+				cb = function(){};
+			}
 			this.wallpaper.unbind('tap');
 			$(window).unbind('orientationchange.actionsheet');
 			if( $.support.cssTransitions && !this.use_slide) {
 				this.content.addClass("ui-actionsheet-animateOut");
 				this.wallpaper.remove();
 				this.content.animationComplete(function() {
-					self.reset();
+					self.reset
+					cb();
 				});
 			} else {
 				this.wallpaper.remove();
 				if (this.use_slide) {
-					this.content.hide("slide", { direction: "down" }, 400);
+					this.content.hide("slide", { direction: "down" }, 400, cb);
 				} else {
-					this.content.fadeOut();
+					this.content.fadeOut(400, cb);
 				}
 				this.element.bind('tap', function(){
 					self.open();
